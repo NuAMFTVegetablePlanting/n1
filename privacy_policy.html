@@ -352,13 +352,6 @@
 			}
 		</style>
 		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function() {
-				try {
-					window.webkit.messageHandlers.Complete.postMessage("");
-				} catch (e) {}
-			});
-		</script>
-		<script type="text/javascript">
 			function Complete(obj) {
 				try {
 					window.webkit.messageHandlers.Complete.postMessage(obj);
