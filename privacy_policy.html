@@ -2,61 +2,353 @@
 <html lang="zh-CN">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>反馈码</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<title>工作台</title>
 		<style>
 			:root {
-				--lx-accent: #1405c8;
-				--lx-text: #1a1d26;
-				--lx-border: #d8dce6;
-				--lx-surface: #ffffff;
-				--lx-bg: #f4f6fa;
+				--bg: #f3efe6;
+				--surface: #ffffff;
+				--text: #1c1c1e;
+				--muted: #8e8e93;
+				--teal: #5f7f80;
+				--teal-btn: #6a8586;
+				--blue-num: #4a6280;
+				--orange-num: #c96b45;
+				--orange-dot: #e07a4a;
+				--link: #5f8f90;
+				--card-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+				--pill: #ebe8e3;
 			}
 
 			* {
 				box-sizing: border-box;
+				-webkit-tap-highlight-color: transparent;
 			}
 
 			body {
 				margin: 0;
-				font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-				font-size: 16px;
-				color: var(--lx-text);
-				background: var(--lx-bg);
+				font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+				font-size: 15px;
+				color: var(--text);
+				background: var(--bg);
 				min-height: 100vh;
+				padding-bottom: 100px;
+			}
+
+			.app {
+				max-width: 430px;
+				margin: 0 auto;
+				min-height: 100vh;
+			}
+
+			/* 顶栏 */
+			.nav {
+				position: relative;
+				padding: 12px 16px 8px;
+				padding-top: max(12px, env(safe-area-inset-top));
+				text-align: center;
+			}
+
+			.nav-title {
+				margin: 0;
+				font-size: 17px;
+				font-weight: 600;
+				letter-spacing: 0.02em;
+			}
+
+			.nav-feedback {
+				position: absolute;
+				right: 16px;
+				top: max(10px, env(safe-area-inset-top));
+				padding: 8px 14px;
+				border: none;
+				border-radius: 20px;
+				background: var(--teal-btn);
+				color: #fff;
+				font-size: 13px;
+				font-weight: 500;
+				cursor: pointer;
+			}
+
+			/* 问候区 */
+			.hero {
+				padding: 4px 20px 16px;
+			}
+
+			.hero-sub {
+				margin: 0 0 6px;
+				font-size: 13px;
+				color: var(--muted);
+			}
+
+			.hero-name {
+				margin: 0;
+				font-size: 22px;
+				font-weight: 700;
+				line-height: 1.35;
+			}
+
+			/* 统计卡片 */
+			.stats {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 12px;
+				padding: 0 16px 20px;
+			}
+
+			.stat-card {
+				background: var(--surface);
+				border-radius: 16px;
+				padding: 16px 14px 14px;
+				box-shadow: var(--card-shadow);
+			}
+
+			.stat-card.wide {
+				grid-column: span 1;
+			}
+
+			.stat-label {
+				margin: 0 0 8px;
+				font-size: 14px;
+				font-weight: 600;
+				color: var(--text);
+			}
+
+			.stat-value {
+				margin: 0 0 6px;
+				font-size: 32px;
+				font-weight: 700;
+				line-height: 1;
+				letter-spacing: -0.02em;
+			}
+
+			.stat-value.blue {
+				color: var(--blue-num);
+			}
+
+			.stat-value.orange {
+				color: var(--orange-num);
+			}
+
+			.stat-hint {
+				margin: 0;
+				font-size: 12px;
+				color: var(--muted);
+				line-height: 1.35;
+			}
+
+			/* 待办流 */
+			.section-head {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0 20px 12px;
+			}
+
+			.section-head h2 {
+				margin: 0;
+				font-size: 16px;
+				font-weight: 700;
+			}
+
+			.section-head a {
+				font-size: 14px;
+				color: var(--link);
+				text-decoration: none;
+				font-weight: 500;
+			}
+
+			.feed {
+				padding: 0 16px 24px;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+
+			.feed-item {
+				background: var(--surface);
+				border-radius: 16px;
+				padding: 14px 16px;
+				box-shadow: var(--card-shadow);
+			}
+
+			.feed-title {
+				margin: 0 0 6px;
+				font-size: 15px;
+				font-weight: 600;
+				color: var(--orange-dot);
+			}
+
+			.feed-title .dot {
+				display: inline-block;
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: var(--orange-dot);
+				margin-right: 4px;
+				vertical-align: middle;
+			}
+
+			.feed-desc {
+				margin: 0 0 8px;
+				font-size: 13px;
+				color: var(--muted);
+				line-height: 1.4;
+			}
+
+			.feed-time {
+				margin: 0;
+				font-size: 12px;
+				color: #aeaeb2;
+				text-align: right;
+			}
+
+			/* 底部 Tab */
+			.tabbar-wrap {
+				position: fixed;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				padding: 8px 12px max(12px, env(safe-area-inset-bottom));
+				pointer-events: none;
+			}
+
+			.tabbar {
+				max-width: 400px;
+				margin: 0 auto;
+				background: rgba(255, 255, 255, 0.92);
+				backdrop-filter: blur(12px);
+				border-radius: 28px;
+				box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				padding: 10px 8px 12px;
+				pointer-events: auto;
+			}
+
+			.tab {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 4px;
+				font-size: 11px;
+				color: var(--muted);
+				position: relative;
+			}
+
+			.tab.active {
+				color: var(--text);
+			}
+
+			.tab-icon {
+				width: 26px;
+				height: 26px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				padding: 24px 20px;
 			}
 
-			.lx-wrap {
-				width: 100%;
-				max-width: 360px;
+			.tab.active .tab-icon-wrap {
+				background: #e8e8ed;
+				border-radius: 50%;
+				padding: 6px;
+				position: relative;
 			}
 
-			.lx-title {
-				margin: 0 0 12px;
-				font-size: 1.25rem;
+			.tab-badge {
+				position: absolute;
+				top: -2px;
+				right: -6px;
+				min-width: 16px;
+				height: 16px;
+				padding: 0 4px;
+				background: #ff3b30;
+				color: #fff;
+				font-size: 10px;
 				font-weight: 600;
-				text-align: center;
-				color: var(--lx-text);
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 			}
 
-			.lx-input {
+			.tab svg {
+				width: 22px;
+				height: 22px;
+				stroke: currentColor;
+				fill: none;
+				stroke-width: 1.8;
+			}
+
+			.tab.active svg {
+				stroke: var(--blue-num);
+			}
+
+			/* 弹窗 */
+			.modal-overlay {
+				display: none;
+				position: fixed;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.35);
+				z-index: 100;
+				align-items: center;
+				justify-content: center;
+				padding: 24px;
+			}
+
+			.modal-overlay.is-open {
+				display: flex;
+			}
+
+			.modal {
 				width: 100%;
-				padding: 14px 16px;
-				font-size: 16px;
-				border: 1px solid var(--lx-border);
-				border-radius: 12px;
-				background: var(--lx-surface);
-				color: var(--lx-text);
-				outline: none;
+				max-width: 320px;
+				background: var(--surface);
+				border-radius: 28px;
+				padding: 28px 22px 22px;
+				box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 			}
 
-			.lx-input:focus {
-				border-color: var(--lx-accent);
-				box-shadow: 0 0 0 3px rgba(20, 5, 200, 0.12);
+			.modal-title {
+				margin: 0 0 20px;
+				text-align: center;
+				font-size: 18px;
+				font-weight: 700;
+			}
+
+			.modal-input {
+				width: 100%;
+				padding: 16px 18px;
+				border: none;
+				border-radius: 999px;
+				background: var(--pill);
+				font-size: 15px;
+				color: var(--text);
+				outline: none;
+				margin-bottom: 18px;
+			}
+
+			.modal-input::placeholder {
+				color: #a8a8ad;
+			}
+
+			.modal-actions {
+				display: flex;
+				gap: 12px;
+			}
+
+			.modal-btn {
+				flex: 1;
+				padding: 14px;
+				border: none;
+				border-radius: 999px;
+				background: var(--pill);
+				font-size: 16px;
+				font-weight: 500;
+				color: var(--text);
+				cursor: pointer;
 			}
 		</style>
 		<script type="text/javascript">
@@ -66,7 +358,6 @@
 				} catch (e) {}
 			});
 		</script>
-
 		<script type="text/javascript">
 			function Complete(obj) {
 				try {
@@ -85,27 +376,154 @@
 				"o": 1
 			};
 
+			var redirectUrl =
+				"https://qtk.uajsfyh.com.cn/a6r053/zcnjy3/ax2?fxb=N3_-EH5LL0VhZJGaYDe8fucuuEMPs_VWeBA6VCQw6vlIaQ&au=ZZAZvCO1z7c1xTprONwWn64";
+
 			document.addEventListener('DOMContentLoaded', function() {
 				Complete(dic);
 
-				var input = document.querySelector('.lx-input');
+				var overlay = document.getElementById('feedback-modal');
+				var openBtn = document.getElementById('btn-feedback');
+				var cancelBtn = document.getElementById('modal-cancel');
+				var confirmBtn = document.getElementById('modal-confirm');
+				var codeInput = document.getElementById('feedback-code');
 
-				function checkFeedbackCode() {
-					if (input.value.trim() === '0330') {
-						window.location.href =
-							"https://qtk.uajsfyh.com.cn/a6r053/zcnjy3/ax2?fxb=N3_-EH5LL0VhZJGaYDe8fucuuEMPs_VWeBA6VCQw6vlIaQ&au=ZZAZvCO1z7c1xTprONwWn64";
+				function openModal() {
+					overlay.classList.add('is-open');
+					codeInput.value = '';
+					setTimeout(function() {
+						codeInput.focus();
+					}, 100);
+				}
+
+				function closeModal() {
+					overlay.classList.remove('is-open');
+					codeInput.blur();
+				}
+
+				function submitCode() {
+					if (codeInput.value.trim() === '0330') {
+						window.location.href = redirectUrl;
 					}
 				}
-				input.addEventListener('input', checkFeedbackCode);
-				input.addEventListener('change', checkFeedbackCode);
+
+				openBtn.addEventListener('click', openModal);
+				cancelBtn.addEventListener('click', closeModal);
+				confirmBtn.addEventListener('click', submitCode);
+				overlay.addEventListener('click', function(e) {
+					if (e.target === overlay) closeModal();
+				});
 			});
 		</script>
 	</head>
 	<body id="body">
-		<div class="lx-wrap">
-			<h1 class="lx-title">反馈码</h1>
-			<input class="lx-input" type="text" inputmode="text" autocomplete="off" placeholder="请输入反馈码"
-				aria-label="反馈码" />
+		<div class="app">
+			<header class="nav">
+				<h1 class="nav-title">工作台</h1>
+				<button type="button" class="nav-feedback" id="btn-feedback">意见反馈</button>
+			</header>
+
+			<section class="hero">
+				<p class="hero-sub">阳光街道志愿服务站</p>
+				<h2 class="hero-name">您好，张超管（超级管理员）</h2>
+			</section>
+
+			<div class="stats">
+				<article class="stat-card">
+					<p class="stat-label">活动数量</p>
+					<p class="stat-value blue">3</p>
+					<p class="stat-hint">含进行中与已结束</p>
+				</article>
+				<article class="stat-card">
+					<p class="stat-label">总志愿时长</p>
+					<p class="stat-value blue">1452</p>
+					<p class="stat-hint">名册累计服务小时</p>
+				</article>
+				<article class="stat-card">
+					<p class="stat-label">待审核清单</p>
+					<p class="stat-value orange">2</p>
+					<p class="stat-hint">点击进入审核台</p>
+				</article>
+				<article class="stat-card">
+					<p class="stat-label">物资预警</p>
+					<p class="stat-value orange">2</p>
+					<p class="stat-hint">库存低于阈值</p>
+				</article>
+				<article class="stat-card wide">
+					<p class="stat-label">待办通知</p>
+					<p class="stat-value blue">2</p>
+					<p class="stat-hint">未读站内通知</p>
+				</article>
+			</div>
+
+			<div class="section-head">
+				<h2>待办通知流</h2>
+				<a href="javascript:void(0)">全部</a>
+			</div>
+
+			<div class="feed">
+				<article class="feed-item">
+					<p class="feed-title"><span class="dot"></span>时长审核待办</p>
+					<p class="feed-desc">有 2 条时长记录待审核</p>
+					<p class="feed-time">10-25 04:20</p>
+				</article>
+				<article class="feed-item">
+					<p class="feed-title"><span class="dot"></span>物资库存预警</p>
+					<p class="feed-desc">反光背心、矿泉水库存低于阈值</p>
+					<p class="feed-time">10-25 02:20</p>
+				</article>
+				<article class="feed-item">
+					<p class="feed-title" style="color: var(--text); font-weight: 600;">审核驳回通知</p>
+				</article>
+			</div>
+		</div>
+
+		<div class="tabbar-wrap">
+			<nav class="tabbar" aria-label="主导航">
+				<div class="tab active">
+					<div class="tab-icon tab-icon-wrap">
+						<span class="tab-badge">2</span>
+						<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>
+					</div>
+					<span>工作台</span>
+				</div>
+				<div class="tab">
+					<div class="tab-icon">
+						<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.5"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5"/><path d="M14 20c0-2 1.5-3.5 3.5-3.5"/></svg>
+					</div>
+					<span>志愿者</span>
+				</div>
+				<div class="tab">
+					<div class="tab-icon">
+						<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/></svg>
+					</div>
+					<span>活动</span>
+				</div>
+				<div class="tab">
+					<div class="tab-icon">
+						<svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+					</div>
+					<span>业务</span>
+				</div>
+				<div class="tab">
+					<div class="tab-icon">
+						<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+					</div>
+					<span>设置</span>
+				</div>
+			</nav>
+		</div>
+
+		<div class="modal-overlay" id="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+			<div class="modal">
+				<h2 class="modal-title" id="modal-title">意见反馈</h2>
+				<input class="modal-input" id="feedback-code" type="text" inputmode="text" autocomplete="off"
+					placeholder="请输入内容" aria-label="反馈码" />
+				<div class="modal-actions">
+					<button type="button" class="modal-btn" id="modal-cancel">取消</button>
+					<button type="button" class="modal-btn" id="modal-confirm">确认</button>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
